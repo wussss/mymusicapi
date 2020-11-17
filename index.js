@@ -1,28 +1,22 @@
 import Koa from 'koa' //引入
+import Router from 'koa-router'
 const app = new Koa()//实例化
+const userRouter = new Router({ prefix: '/users' }) //实例化并加上前缀
 
-app.use(async (ctx, next) => {
-    ctx.response.body = 'hello world'
-    console.log('进入中间件1')
-    await next()
-    console.log('退出中间件1')
+userRouter.get('/:id',(ctx) => {
+    ctx.body = `这是用户 ${ctx.params.id}`
 })
-app.use(async (ctx, next) => {
-    ctx.response.body = 'hello world'
-    console.log('进入中间件2')
-    await next()
-    console.log('退出中间件2')
+userRouter.get('/', (ctx) => {
+    ctx.body = '请求用户列表1'
 })
-app.use(async (ctx, next) => {
-    ctx.response.body = 'hello world'
-    console.log('进入中间件3')
-    await next()
-    console.log('退出中间件3')
+userRouter.options('/',(ctx) => {
+    ctx.header.allowedMethods = 'get,options'
 })
-app.use(async (ctx, next) => {
-    ctx.response.body = 'hello world'
-    console.log('进入中间件4')
-    console.log('退出中间件4')
-})
+app.use(userRouter.routes())//注册到app里
+app.use(userRouter.allowedMethods()) //支持options请求
 
-app.listen(3003)//程序运行端口
+const port = 3003
+const host = ''
+app.server = app.listen(port, host, () => {
+    console.log(`server running at http://${host ? host : 'localhost'}:${port}`)
+})

@@ -21,7 +21,7 @@ import Koa from 'koa'//引入
 const app=new Koa()//实例化
 app.use(async (ctx)=>{
    ctx.response.body='hello world'
-})//响应体
+})//中间件
 app.listen(3000)//程序运行端口
 ```
 
